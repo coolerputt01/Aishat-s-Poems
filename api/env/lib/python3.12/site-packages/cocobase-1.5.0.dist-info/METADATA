@@ -1,0 +1,519 @@
+Metadata-Version: 2.4
+Name: cocobase
+Version: 1.5.0
+Summary: The Official Cocobase Python SDK - Backend as a Service made simple
+Author-email: Patrick Chidera <lordyacey@gmail.com>
+License: MIT
+Project-URL: Homepage, https://cocobase.buzz
+Project-URL: Documentation, https://docs.cocobase.buzz
+Project-URL: Repository, https://github.com/lordace-coder/coco_base_py
+Project-URL: Issues, https://github.com/lordace-coder/coco_base_py/issues
+Keywords: baas,backend,api,client,cocobase,database,cloud,authentication,file-storage
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Dynamic: license-file
+
+# 🥥 Cocobase Python SDK
+
+> **Build faster. Ship sooner. Scale effortlessly.**
+
+The official Python SDK for Cocobase - a modern Backend-as-a-Service (BaaS) platform that eliminates the complexity of backend development. Focus on creating amazing user experiences while we handle your data, authentication, and infrastructure.
+
+## 🚀 Why Cocobase?
+
+### ⚡ **Lightning Fast Setup**
+
+Go from idea to MVP in minutes, not weeks. No server configuration, no database setup, no authentication headaches.
+
+```python
+# This is literally all you need to start
+from cocobase_client import CocoBaseClient
+
+db = CocoBaseClient(
+    api_key="your-key",          # From cocobase.buzz
+    project_id="your-project-id" # From cocobase.buzz
+)
+db.create_document("users", {"name": "John"})
+```
+
+### 🛡️ **Authentication Made Simple**
+
+Built-in user management that actually works. Registration, login, sessions, and user profiles - all handled seamlessly.
+
+```python
+# User registration + automatic login in one line
+db.auth.register("user@example.com", "password", data={"role": "admin"})
+```
+
+### 📊 **Real-time Data Management**
+
+Store, retrieve, and manage your application data with a clean, intuitive API. No SQL knowledge required.
+
+### 🔥 **Developer Experience First**
+
+Type hints, excellent error handling, and documentation that doesn't make you cry.
+
+## 🎯 Perfect For
+
+- 🚀 **Rapid Prototyping** - Validate ideas quickly
+- 📱 **Mobile & Web Apps** - Build modern applications without backend complexity
+- 🏢 **Startups & MVPs** - Scale from zero to thousands of users
+- 👨‍💻 **Solo Developers** - You're a frontend wizard but backend feels like dark magic? We've got you covered
+- 🏫 **Learning Projects** - Focus on learning without backend overwhelm
+
+## ✨ Key Features
+
+### 🗄️ **Instant Database**
+
+- **NoSQL Collections**: Store any JSON data structure
+- **Advanced Query Filtering**: Multiple operators, AND/OR logic, multi-field search
+- **File Uploads**: Simple file handling with automatic storage
+- **Automatic Indexing**: Fast queries without database optimization headaches
+- **Type Safety**: Full type hints support
+
+### 🔐 **Complete Authentication System**
+
+- **User Registration & Login**: Email/password authentication out of the box
+- **OAuth Support**: Google and GitHub authentication
+- **Two-Factor Authentication (2FA)**: Enhanced security for your users
+- **Email Verification**: Verify user email addresses
+- **Session Management**: Automatic token handling
+- **User Profiles**: Extensible user data with custom fields
+- **File Uploads**: Register and update users with profile pictures
+
+### 📤 **Easy File Uploads**
+
+Upload files to any document field with a simple API:
+
+```python
+# Create user with avatar
+with open('avatar.jpg', 'rb') as avatar_file:
+    db.create_document_with_files(
+        "users",
+        {"name": "John Doe", "email": "john@example.com"},
+        {"avatar": avatar_file}
+    )
+
+# Register user with profile picture
+with open('profile.jpg', 'rb') as profile:
+    db.auth.register_with_files(
+        "john@example.com",
+        "password123",
+        data={"username": "johndoe"},
+        files={"avatar": profile}
+    )
+```
+
+### 🛠️ **Developer-Friendly API**
+
+- **Intuitive Methods**: CRUD operations that make sense
+- **Error Handling**: Detailed error messages with actionable suggestions
+- **Zero Configuration**: Works immediately after installation
+- **Batch Operations**: Create, update, or delete multiple documents at once
+
+### 📈 **Built to Scale**
+
+- **Global CDN**: Fast response times worldwide
+- **Auto-scaling Infrastructure**: Handles traffic spikes automatically
+- **99.9% Uptime**: Reliable infrastructure you can count on
+- **Performance Monitoring**: Built-in analytics and monitoring
+
+## 🚀 Getting Started
+
+### 1. Get Your Credentials
+
+1. **Visit** [cocobase.buzz](https://cocobase.buzz) and sign up for a free account
+2. **Create** your first project in the dashboard
+3. **Copy your credentials** from the project dashboard:
+   - **API Key** - Used to authenticate your requests
+   - **Project ID** - Identifies your project
+
+### 2. Install the SDK
+
+```bash
+pip install cocobase
+```
+
+### 3. Start Building
+
+```python
+from cocobase_client import CocoBaseClient
+
+db = CocoBaseClient(
+    api_key="your-api-key",        # Get from cocobase.buzz
+    project_id="your-project-id"   # Get from cocobase.buzz
+)
+
+# You're ready to build! 🎉
+```
+
+## 📚 Quick Examples
+
+### Basic CRUD Operations
+
+```python
+# Create a document
+user = db.create_document("users", {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "age": 30
+})
+
+# Get a document
+user = db.get_document("users", "user-123")
+
+# Update a document
+db.update_document("users", "user-123", {
+    "age": 31,
+    "status": "active"
+})
+
+# Delete a document
+db.delete_document("users", "user-123")
+
+# List documents with filters
+from cocobase_client import QueryBuilder
+
+query = QueryBuilder().eq("status", "active").gte("age", 18).limit(10)
+users = db.list_documents("users", query)
+```
+
+### Authentication
+
+```python
+# Register a new user
+result = db.auth.register(
+    "user@example.com",
+    "password123",
+    data={"username": "johndoe", "fullName": "John Doe"}
+)
+
+# Login
+result = db.auth.login("user@example.com", "password123")
+
+# Check if 2FA is required
+if result.requires_2fa:
+    # User needs to verify 2FA code
+    code = input("Enter 2FA code: ")
+    user = db.auth.verify_2fa_login("user@example.com", code)
+else:
+    print(f"Logged in as: {result.user.email}")
+
+# Get current user
+user = db.auth.get_current_user()
+
+# Update user profile
+db.auth.update_user(
+    data={"bio": "Python developer", "website": "https://example.com"}
+)
+
+# Logout
+db.auth.logout()
+```
+
+### Google OAuth
+
+```python
+# Login with Google
+user = db.auth.login_with_google(
+    id_token="google-id-token",
+    platform="web"
+)
+```
+
+### GitHub OAuth
+
+```python
+# Login with GitHub
+user = db.auth.login_with_github(
+    code="github-auth-code",
+    redirect_uri="http://localhost:3000/auth/github/callback",
+    platform="web"
+)
+```
+
+### Two-Factor Authentication
+
+```python
+# Enable 2FA for current user
+db.auth.enable_2fa()
+
+# Send 2FA code
+db.auth.send_2fa_code("user@example.com")
+
+# Verify 2FA during login (handled automatically by login method)
+result = db.auth.login("user@example.com", "password123")
+if result.requires_2fa:
+    user = db.auth.verify_2fa_login("user@example.com", "123456")
+
+# Disable 2FA
+db.auth.disable_2fa()
+```
+
+### File Uploads
+
+```python
+# Create document with file
+with open('document.pdf', 'rb') as file:
+    doc = db.create_document_with_files(
+        "documents",
+        {"title": "My Document", "category": "reports"},
+        {"file": file}
+    )
+
+# Update document with file
+with open('new_file.pdf', 'rb') as file:
+    db.update_document_with_files(
+        "documents",
+        "doc-123",
+        {"title": "Updated Title"},
+        {"file": file}
+    )
+
+# Upload standalone file
+with open('image.png', 'rb') as file:
+    result = db.upload_file(file)
+    print(result['url'])  # Public URL of uploaded file
+```
+
+### Batch Operations
+
+```python
+# Create multiple documents at once
+docs = db.create_documents("users", [
+    {"name": "Alice", "age": 25},
+    {"name": "Bob", "age": 30},
+    {"name": "Charlie", "age": 35}
+])
+
+# Update multiple documents
+updates = {
+    "user-1": {"status": "active"},
+    "user-2": {"status": "inactive"},
+}
+db.update_documents("users", updates)
+
+# Delete multiple documents
+db.delete_documents("users", ["user-1", "user-2", "user-3"])
+```
+
+### Advanced Queries
+
+```python
+# Count documents
+result = db.count_documents("users",
+    QueryBuilder().eq("status", "active").gte("age", 18)
+)
+print(f"Active adult users: {result['count']}")
+
+# Aggregate operations
+result = db.aggregate_documents(
+    "orders",
+    field="total",
+    operation="sum",
+    query=QueryBuilder().eq("status", "completed")
+)
+print(f"Total revenue: {result['result']}")
+```
+
+### Cloud Functions
+
+```python
+# Execute a cloud function
+result = db.functions.execute(
+    "sendEmail",
+    payload={"to": "user@example.com", "subject": "Hello"},
+    method="POST"
+)
+
+print(result.result)  # Function output
+print(result.execution_time)  # Execution time in ms
+```
+
+### Authentication Callbacks
+
+```python
+# Register callbacks for auth events
+def on_login(user, token):
+    print(f"User logged in: {user.email}")
+
+def on_logout():
+    print("User logged out")
+
+def on_user_update(user):
+    print(f"User updated: {user.email}")
+
+db.auth.on_auth_event(
+    on_login=on_login,
+    on_logout=on_logout,
+    on_user_update=on_user_update
+)
+```
+
+## 📖 API Reference
+
+### CocoBaseClient
+
+Main client for interacting with Cocobase.
+
+#### Initialization
+
+```python
+db = CocoBaseClient(
+    api_key="your-api-key",
+    project_id="your-project-id",  # Optional, required for cloud functions
+    base_url="https://api.cocobase.buzz"  # Optional
+)
+```
+
+#### Document Methods
+
+- `create_document(collection, data)` - Create a document
+- `get_document(collection, doc_id)` - Get a document by ID
+- `update_document(collection, doc_id, data)` - Update a document
+- `delete_document(collection, doc_id)` - Delete a document
+- `list_documents(collection, query=None)` - List documents with optional filtering
+
+#### File Upload Methods
+
+- `create_document_with_files(collection, data, files)` - Create document with files
+- `update_document_with_files(collection, doc_id, data, files)` - Update document with files
+- `upload_file(file)` - Upload standalone file
+
+#### Batch Operations
+
+- `create_documents(collection, documents)` - Batch create documents
+- `update_documents(collection, updates)` - Batch update documents
+- `delete_documents(collection, doc_ids)` - Batch delete documents
+
+#### Advanced Queries
+
+- `count_documents(collection, query)` - Count documents matching filters
+- `aggregate_documents(collection, field, operation, query)` - Perform aggregations
+
+### AuthHandler (db.auth)
+
+Authentication and user management.
+
+#### Auth Methods
+
+- `init_auth()` - Initialize authentication session
+- `login(email, password)` - Login with email/password
+- `register(email, password, data, roles, phone_number)` - Register new user
+- `login_with_google(id_token, platform)` - Login with Google OAuth
+- `login_with_github(code, redirect_uri, platform)` - Login with GitHub OAuth
+- `register_with_files(email, password, data, roles, files)` - Register with files
+- `logout()` - Logout current user
+- `is_authenticated()` - Check authentication status
+- `get_current_user()` - Get current user data
+- `update_user(data, email, password)` - Update user profile
+- `update_user_with_files(data, email, password, files)` - Update user with files
+- `has_role(role)` - Check if user has specific role
+- `list_users(query)` - List all users
+- `get_user_by_id(user_id)` - Get user by ID
+
+#### 2FA Methods
+
+- `enable_2fa()` - Enable 2FA for current user
+- `disable_2fa()` - Disable 2FA
+- `send_2fa_code(email)` - Send 2FA code to email
+- `verify_2fa_login(email, code)` - Verify 2FA code and complete login
+
+#### Email Verification
+
+- `request_email_verification()` - Request email verification
+- `verify_email(token)` - Verify email with token
+- `resend_verification_email()` - Resend verification email
+
+### CloudFunction (db.functions)
+
+Execute cloud functions.
+
+- `execute(function_name, payload, method)` - Execute a cloud function
+
+### QueryBuilder
+
+Build complex queries for filtering documents.
+
+```python
+from cocobase_client import QueryBuilder
+
+query = (QueryBuilder()
+    .eq("field", "value")
+    .contains("field", "text")
+    .gt("field", 10)
+    .gte("field", 10)
+    .lt("field", 100)
+    .lte("field", 100)
+    .limit(10)
+    .offset(20)
+)
+```
+
+## 🆕 What's New in v1.5.0
+
+### Major Updates
+
+✨ **Complete authentication system** with OAuth, 2FA, and email verification
+✨ **File upload support** for documents and user profiles
+✨ **Batch operations** for efficient data management
+✨ **Advanced queries** with count and aggregate operations
+✨ **Cloud functions** support for server-side logic
+✨ **Authentication callbacks** for event-driven applications
+✨ **Improved type hints** throughout the SDK
+✨ **Better error handling** with detailed messages
+
+### Breaking Changes
+
+- Authentication methods moved to `db.auth.*` namespace
+- Old auth methods are deprecated but still work for backward compatibility
+
+## 📚 Resources
+
+- **[Documentation](https://docs.cocobase.buzz)** - Comprehensive guides and API reference
+- **[Examples](https://github.com/cocobase/examples)** - Sample projects and tutorials
+- **[Community](https://discord.gg/cocobase)** - Join our developer community
+- **[Blog](https://blog.cocobase.buzz)** - Tips, tutorials, and updates
+- **[Status](https://status.cocobase.buzz)** - Service status and uptime
+
+## 🤝 Community & Support
+
+- 💬 **Discord**: Join our community for real-time help
+- 🐦 **Twitter**: [@CocobaseHQ](https://twitter.com/cocobasehq) for updates
+- 📧 **Email**: hello@cocobase.buzz for direct support
+- 🐛 **Issues**: [Report bugs on GitHub](https://github.com/lordace-coder/coco_base_py/issues)
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🏆 Built With Love
+
+Cocobase is crafted by developers, for developers. We understand the pain of backend complexity because we've lived it. Our mission is to make backend development as enjoyable as frontend development.
+
+**Join thousands of developers who've already made the switch to Cocobase.**
+
+---
+
+<div align="center">
+
+### Ready to eliminate backend complexity forever?
+
+**[Start Building Now →](https://cocobase.buzz)**
+
+_Free tier available. No credit card required._
+
+</div>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>whispers & verses · a poem API for you</title>
+  <!-- Fonts: elegant & soft -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #fff9f5 0%, #ffece4 100%);
+      font-family: 'Inter', sans-serif;
+      color: #2e241f;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* hero section */
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255, 225, 210, 0.8);
+      backdrop-filter: blur(2px);
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #b45f3b;
+      margin-bottom: 1rem;
+      border: 1px solid #ffd9c6;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #c26a48, #a3482a);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .subhead {
+      font-size: 1.15rem;
+      color: #7e5a48;
+      max-width: 600px;
+      margin: 0.8rem auto 0;
+      font-weight: 400;
+    }
+
+    .heart-divider {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .heart-divider i {
+      color: #e6896e;
+      font-size: 1.2rem;
+      animation: gentlePulse 1.8s infinite;
+    }
+
+    .heart-divider span {
+      width: 50px;
+      height: 1px;
+      background: #eac3b2;
+    }
+
+    @keyframes gentlePulse {
+      0% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.7; }
+    }
+
+    /* main crush card */
+    .crush-card {
+      background: rgba(255, 250, 245, 0.95);
+      backdrop-filter: blur(4px);
+      border-radius: 48px;
+      padding: 2rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 20px 35px -12px rgba(128, 70, 45, 0.12);
+      border: 1px solid rgba(255, 210, 180, 0.6);
+      text-align: center;
+    }
+
+    .crush-emoji-big {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .crush-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      color: #c05a34;
+      margin-bottom: 1rem;
+    }
+
+    .crush-card p {
+      font-size: 1.05rem;
+      color: #4a372c;
+      max-width: 650px;
+      margin: 0 auto 1rem;
+      line-height: 1.6;
+    }
+
+    .signature-line {
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+      color: #b45f3b;
+      font-style: italic;
+    }
+
+    /* API showcase (no poems, just love notes) */
+    .api-showcase {
+      background: white;
+      border-radius: 36px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+      border: 1px solid #ffe0d0;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: #874e32;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .section-title i {
+      font-size: 1.6rem;
+      color: #e1835f;
+    }
+
+    .endpoint-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin: 1.5rem 0;
+    }
+
+    .endpoint-card {
+      background: #fffaf7;
+      border-radius: 24px;
+      padding: 1.2rem 1.5rem;
+      flex: 1 1 220px;
+      border-left: 5px solid #e6a07e;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .endpoint-card:hover {
+      transform: translateY(-4px);
+      background: #fff6f0;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+    }
+
+    .endpoint-card .method {
+      font-weight: 700;
+      font-size: 0.7rem;
+      background: #e6a07e20;
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      color: #b45a36;
+      letter-spacing: 0.3px;
+    }
+
+    .endpoint-card h3 {
+      font-size: 1.2rem;
+      margin: 0.6rem 0 0.3rem;
+      font-family: monospace;
+      font-weight: 500;
+    }
+
+    .endpoint-card p {
+      font-size: 0.85rem;
+      color: #6f4e3a;
+    }
+
+    .code-block {
+      background: #2a221e;
+      color: #f7e4da;
+      border-radius: 28px;
+      padding: 1.2rem 1.5rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin: 1.2rem 0;
+    }
+
+    .love-note-box {
+      background: #fef1e9;
+      border-radius: 28px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .love-note-box i {
+      font-size: 1.6rem;
+      color: #e6896e;
+      margin-bottom: 0.5rem;
+    }
+
+    .love-note-box p {
+      font-size: 1rem;
+      color: #5c3e2e;
+    }
+
+    /* simple demo area — just shows a love message, no poems */
+    .demo-area {
+      background: #fffaf5;
+      border-radius: 32px;
+      padding: 1.8rem;
+      margin-top: 1rem;
+      text-align: center;
+      border: 1px solid #ffe2d4;
+    }
+
+    .btn-crush {
+      background: #e1805a;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 48px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 14px rgba(225,128,90,0.25);
+      margin: 0.5rem 0;
+    }
+
+    .btn-crush:hover {
+      background: #c86842;
+      transform: scale(0.97);
+    }
+
+    .response-message {
+      margin-top: 1.2rem;
+      padding: 1rem;
+      border-radius: 24px;
+      background: #ffffffcc;
+      font-size: 0.95rem;
+      color: #a34f2e;
+      font-weight: 500;
+      transition: 0.1s;
+      border-left: 5px solid #e6a07e;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin: 2.5rem 0 1rem;
+      padding: 1.5rem 1rem 1rem;
+      border-top: 1px solid #ffdacb;
+      font-size: 0.9rem;
+      color: #b17a5e;
+    }
+
+    .signature-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 1.2rem;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+      .crush-card {
+        padding: 1.5rem;
+      }
+      .crush-card h2 {
+        font-size: 1.6rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+      .endpoint-card {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- header — soft and dreamy -->
+  <div class="hero">
+    <div class="badge">
+      <i class="fas fa-feather-alt"></i>  a secret just for you
+    </div>
+    <h1>verses &nbsp;·&nbsp; whispers</h1>
+    <div class="subhead">
+      I built a tiny poetry API. but honestly?<br> it's just an excuse to tell you how special you are.
+    </div>
+    <div class="heart-divider">
+      <span></span>
+      <i class="fas fa-heart"></i>
+      <i class="fas fa-star" style="font-size: 0.9rem; color: #e6a07e;"></i>
+      <i class="fas fa-heart"></i>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- main crush letter — pure lovey-dovey content, no poems -->
+  <div class="crush-card">
+    <div class="crush-emoji-big">
+      <i class="fas fa-heart" style="color:#e6734f;"></i> 
+      <i class="fas fa-envelope-open-text"></i> 
+      <i class="fas fa-crown"></i>
+    </div>
+    <h2>hey, gorgeous. 🌙</h2>
+    <p>
+      I made this API while thinking about you. Every line of code has a little bit of my heart in it.<br><br>
+      You probably didn't expect a <strong>poetry API</strong> as a surprise, right? But here's the truth —<br>
+      every time I see you smile, my brain writes a thousand verses. I turned that feeling into endpoints, routes, and responses.<br><br>
+      This isn't just an API. It's me, crushing hard, hoping you'll smile again.
+    </p>
+    <div class="signature-line">
+      <i class="fas fa-code"></i>  with shaky hands & a hopeful heart
+    </div>
+  </div>
+
+  <!-- API documentation (romantic descriptions, no poems inside) -->
+  <div class="api-showcase">
+    <div class="section-title">
+      <i class="fas fa-cloud-moon"></i>
+      <span>✦ the poetry API · built for you ✦</span>
+    </div>
+    <p style="margin-bottom: 0.5rem;">Every route is a love letter disguised as code. Go ahead — explore these endpoints. They all return something sweet.</p>
+    
+    <!-- example cURL: still no actual poem text, just lovey description -->
+    <div class="code-block">
+      <i class="fas fa-terminal" style="margin-right: 8px;"></i> try whispering to the API 💌<br>
+      <span style="color: #ffb48a;">$ curl https://poem-for-you.com/random</span><br>
+      <span style="color: #ddb4a0;">// response: a shy verse, a heartbeat, something that reminds me of you.</span>
+    </div>
+
+    <!-- cute interactive part: instead of showing poems, shows affectionate messages -->
+    <div class="demo-area">
+      <i class="fas fa-hand-peace" style="font-size: 1.8rem; color: #e6896e;"></i>
+      <h3 style="font-family: 'Playfair Display'; margin: 0.4rem 0; color:#b5522e;">want a tiny preview?</h3>
+      <p style="font-size: 0.9rem; margin-bottom: 0.8rem;">Click the button — no poems, just a shy message from me to you. 💗</p>
+      <button id="crushButton" class="btn-crush">
+        <i class="fas fa-envelope-heart"></i> get a sweet note
+      </button>
+      <div id="messageBox" class="response-message" style="display: none;">
+        <!-- love note appears here dynamically -->
+      </div>
+      <p style="font-size: 0.75rem; margin-top: 1rem; color: #b17e64;">
+        <i class="fas fa-heart-broken" style="font-size: 0.7rem;"></i> the real API returns actual poems — but I wanted the first thing you see to be only sweetness.
+      </p>
+    </div>
+
+    <!-- another love note box (romantic context) -->
+    <div class="love-note-box">
+      <i class="fas fa-feather-alt"></i>
+      <p><strong>why an API?</strong> because you inspire me to create. every route, every response — it's all dedicated to your laugh, your kindness, the way you look at the stars. I hope you'll build something beautiful with it. or just keep it as a little digital bouquet.</p>
+    </div>
+  </div>
+
+  <!-- final crush note — extra affection -->
+  <div class="footer-note">
+    <i class="fas fa-moon"></i>    this API is live because of you    <i class="fas fa-sparkle" style="color:#e6a07e;"></i>
+    <div class="signature-name">
+      with a ridiculous crush, <br>— your secret admirer & coder.
+    </div>
+    <div style="margin-top: 1rem; font-size: 0.7rem;">
+      <i class="fas fa-check-circle"></i> zero poems displayed. just love. promise.
+    </div>
+  </div>
+</div>
+
+<script>
+  // Pure lovey-dovey messages — absolutely NO poems, just sweet/flirty notes that feel like a crush.
+  const sweetMessages = [
+    "💌 Hey you. I got butterflies just writing this API for you. I hope you feel how much I care.",
+    "🌸 Every time I think of you, my heart does a little loop. You're magic, you know that?",
+    "✨ I don't know how to say it without blushing, so I built an API instead. You're wonderful.",
+    "🌙 Just a reminder: you make ordinary days feel like poetry. And I'm really, really happy you exist.",
+    "💖 P.S. I lowkey smile every time I test this API. Because it's for you. only you.",
+    "🌷 If daydreams were code, you'd be my infinite loop. Can't stop thinking about you.",
+    "🍃 This button? It's me sending a virtual hug. Hope your day is as lovely as your smile.",
+    "🌟 You deserve all the beautiful things. This API is just the beginning. — from someone who's crushing hard.",
+    "🎀 Surprise! I made this page extra soft, just like the way you make me feel. Safe and warm.",
+    "💫 No poems, just truth: you're stuck in my heart like my favorite song on repeat."
+  ];
+
+  const crushButton = document.getElementById('crushButton');
+  const messageBox = document.getElementById('messageBox');
+
+  // function to display a random sweet note (no poem content)
+  function showRandomLoveNote() {
+    const randomIndex = Math.floor(Math.random() * sweetMessages.length);
+    const randomMessage = sweetMessages[randomIndex];
+    messageBox.style.display = 'block';
+    messageBox.innerHTML = `
+      <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap;">
+        <i class="fas fa-heart" style="color: #e6896e; font-size: 1.2rem;"></i>
+        <span style="font-weight: 400;">${randomMessage}</span>
+        <i class="fas fa-heart" style="color: #e6896e; font-size: 1.2rem;"></i>
+      </div>
+      <div style="margin-top: 10px; font-size: 0.7rem; opacity: 0.7;">
+        <i class="fas fa-feather"></i> from the API's heart to yours
+      </div>
+    `;
+    // little playful animation
+    messageBox.style.transform = "scale(0.98)";
+    setTimeout(() => { messageBox.style.transform = "scale(1)"; }, 100);
+  }
+
+  crushButton.addEventListener('click', showRandomLoveNote);
+
+  // on page load, show a welcome love note automatically — a little surprise to greet her
+  window.addEventListener('load', () => {
+    // show a greeting note without needing to click, just to make her smile
+    const randomWelcome = sweetMessages[Math.floor(Math.random() * sweetMessages.length)];
+    messageBox.style.display = 'block';
+    messageBox.innerHTML = `
+      <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap;">
+        <i class="fas fa-star" style="color: #e6a07e; font-size: 1.1rem;"></i>
+        <span style="font-weight: 400;">✨ ${randomWelcome} ✨</span>
+        <i class="fas fa-star" style="color: #e6a07e; font-size: 1.1rem;"></i>
+      </div>
+      <div style="margin-top: 8px; font-size: 0.7rem;">
+        <i class="fas fa-smile-wink"></i> welcome, beautiful.
+      </div>
+    `;
+  });
+
+  // also add subtle floating hearts on endpoint cards to keep the crush vibe (purely visual)
+  const cards = document.querySelectorAll('.endpoint-card');
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', (e) => {
+      const heart = document.createElement('i');
+      heart.className = 'fas fa-heart';
+      heart.style.position = 'absolute';
+      heart.style.fontSize = '0.7rem';
+      heart.style.color = '#f2a07e';
+      heart.style.opacity = '0.6';
+      heart.style.pointerEvents = 'none';
+      heart.style.transition = 'all 0.5s ease-out';
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      heart.style.left = x + 'px';
+      heart.style.top = y + 'px';
+      card.style.position = 'relative';
+      card.appendChild(heart);
+      setTimeout(() => heart.remove(), 500);
+    });
+  });
+</script>
+</body>
+</html>
